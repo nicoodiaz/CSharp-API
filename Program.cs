@@ -7,7 +7,7 @@ string rutaArchivoCadetes = "Datos/cadetes.csv";
 int opcionMenu;
 bool usandoPrograma = true;
 
-var AyudaArchivos = new HelperArchivos();
+var AyudaArchivos = new AccesoADatosCSV();
 
 var cadeteria = AyudaArchivos.CrearCadeteria(rutaArchivoCadeteria);
 

@@ -6,7 +6,6 @@ public class Cadete
     public string nombreCadete { get; set; }
     public string direccionCadete { get; set; }
     public string telefonoCadete { get; set; }
-    public List<Pedidos> pedidosACadete { get; set; }
     public Cadete()
     {
         
@@ -17,10 +16,9 @@ public class Cadete
         this.nombreCadete = nombre;
         this.direccionCadete = direccion;
         this.telefonoCadete = telefono;
-        pedidosACadete = new List<Pedidos>();
     }
 
-    public float JornalACobrar()
+/*     public float JornalACobrar()
     {
         return pedidosACadete.Count() * 500;
     }
@@ -32,5 +30,5 @@ public class Cadete
     public void RemoverPedido(Pedidos pedidoARemover)
     {
         pedidosACadete.Remove(pedidoARemover);
-    }
+    } */
 }

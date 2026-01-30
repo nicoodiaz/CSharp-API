@@ -5,7 +5,9 @@ public class Cadeteria
     public string nombreCadeteria { get; set; }
     public string telefonoCadeteria { get; set; }
     public List<Cadete> listaCadetes { get; set; }
-    public List<Pedidos> pedidosNoAsignados { get; set; } = new List<Pedidos>();
+    //public List<Pedidos> pedidosNoAsignados { get; set; } = new List<Pedidos>();
+    public List<Pedidos> listadoPedidos { get; set; }
+
     public Cadeteria ()
     {
         
@@ -27,16 +29,12 @@ public class Cadeteria
     }
     public Pedidos BuscarUnPedidoPorId(int nroPedido)
     {
-        var p = pedidosNoAsignados.FirstOrDefault(pedido => pedido.nroPedido == nroPedido);
-        if (p != null) return p;
+        /* var p = pedidosNoAsignados.FirstOrDefault(pedido => pedido.nroPedido == nroPedido);
+        if (p != null) return p; */
 
-        foreach (var cadete in listaCadetes)
-        {
-            if (cadete.pedidosACadete == null) continue;
+        var pedidoBuscado = listadoPedidos.FirstOrDefault(pedido => pedido.nroPedido == nroPedido);
+        if (pedidoBuscado != null) return pedidoBuscado;
 
-            var pedidoBuscado = cadete.pedidosACadete.FirstOrDefault(pedido => pedido.nroPedido == nroPedido);
-            if (pedidoBuscado != null) return pedidoBuscado;
-        }
         return null;
     }
     public void CambiarEstadoPedido(int nroPedido, Estado nuevoEstado)
@@ -55,7 +53,7 @@ public class Cadeteria
     public Pedidos DarAltaPedido(int nroPedido, string observacion, Cliente cliente)
     {
         Pedidos nuevoPedido = new Pedidos(nroPedido, observacion, cliente);
-        pedidosNoAsignados.Add(nuevoPedido);
+        listadoPedidos.Add(nuevoPedido);
         return nuevoPedido;
     }
     public void AsignarPedido(int idCadete, Pedidos nuevoPedido)
@@ -63,9 +61,10 @@ public class Cadeteria
         var cadete = BuscarCadetePorID(idCadete);
         if (cadete != null)
         {
-            cadete.AgregarPedido(nuevoPedido);
+            listadoPedidos.Add(nuevoPedido);
             CambiarEstadoPedido(nuevoPedido.nroPedido, Estado.Asignado);
-            pedidosNoAsignados.Remove(nuevoPedido);
+            nuevoPedido.cadeteAsignado = cadete;
+            /* pedidosNoAsignados.Remove(nuevoPedido); */
         }
     }
     public void ReasignarPedido(int nroPedidoReasignar, int idCadeteNuevo)
@@ -76,8 +75,17 @@ public class Cadeteria
             Cadete nuevoCadete = BuscarCadetePorID(idCadeteNuevo);
             if (nuevoCadete != null)
             {
-                nuevoCadete.AgregarPedido(pedido);
+                pedido.cadeteAsignado = nuevoCadete;
             }
         }
+    }
+    public double JornalACobrar(int idCadete)
+    {
+        var cadete = BuscarCadetePorID(idCadete);
+        if(cadete == null) return 0;
+
+        int cantidad = listadoPedidos.Count(p => p.cadeteAsignado.id == idCadete);
+
+        return cantidad * 500; 
     }
 }

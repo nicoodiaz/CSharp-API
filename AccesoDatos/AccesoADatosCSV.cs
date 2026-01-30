@@ -2,7 +2,7 @@ using System.Xml.Schema;
 
 namespace PracticaTP1;
 
-public class HelperArchivos
+public class AccesoADatosCSV : IAccesoADatos
 {
     public Cadeteria CrearCadeteria(string rutaArchivoCadeteria)
     {
@@ -18,6 +18,7 @@ public class HelperArchivos
             cadeteria.nombreCadeteria = nombre;
             cadeteria.telefonoCadeteria = telefono;
             cadeteria.listaCadetes = new List<Cadete>();
+            cadeteria.listadoPedidos = new List<Pedidos>();
         }
         return cadeteria;
     }

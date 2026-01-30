@@ -7,7 +7,8 @@ public class Pedidos
     public int nroPedido { get; set; }
     public string observacion { get; set; }
     public Cliente cliente { get; set; }
-    public Estado estadoPedido { get; set;}
+    public Estado estadoPedido { get; set; }
+    public Cadete cadeteAsignado { get; set; }
 
     public Pedidos()
     {
