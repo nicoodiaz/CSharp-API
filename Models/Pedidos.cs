@@ -22,13 +22,13 @@ public class Pedidos
         this.estadoPedido = Estado.Pendiente;
     }
 
-    public void VerDireccionCliente()
-    {
-        Console.WriteLine($"aaa{cliente.direccionCliente}");
+    public string VerDireccionCliente()
+    {   
+        return "{cliente.direccionCliente}";
     }
-    public void VerDatosCliente()
+    public string VerDatosCliente()
     {
-        System.Console.WriteLine("-----Los datos del cliente son: -----");
-        System.Console.WriteLine($"Nombre: {cliente.nombreCliente} | Telefono: {cliente.telefonoCliente} | Direccion: {cliente.direccionCliente} | Referencia sobre donde vive: {cliente.datosReferencia}");
+        string datos = $"Nombre: {cliente.nombreCliente} | Telefono: {cliente.telefonoCliente} | Direccion: {cliente.direccionCliente} | Referencia sobre donde vive: {cliente.datosReferencia}";
+        return datos;
     }
 }

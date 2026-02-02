@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+
 namespace PracticaTP1;
 
 public class Cadeteria
@@ -37,18 +39,30 @@ public class Cadeteria
 
         return null;
     }
-    public void CambiarEstadoPedido(int nroPedido, Estado nuevoEstado)
+    public bool CambiarEstadoPedido(int nroPedido, Estado nuevoEstado)
     {
         var pedido = BuscarUnPedidoPorId(nroPedido);
-        if (pedido != null) pedido.estadoPedido = nuevoEstado;
-    }
-    public void AgregarCadete(Cadete cadeteAgregar)
-    {
-        foreach (var cadete in listaCadetes)
+        if (pedido != null)
         {
-            if (listaCadetes.Any(cadete => cadete.id == cadeteAgregar.id)) return;
-            listaCadetes.Add(cadeteAgregar);
+            
+            if (pedido.estadoPedido == Estado.Pendiente && (nuevoEstado == Estado.Asignado || nuevoEstado == Estado.Cancelado))
+            {
+                pedido.estadoPedido = nuevoEstado;
+                return true;
+            }
+            if (pedido.estadoPedido == Estado.Asignado && nuevoEstado == Estado.Entregado)
+            {
+                pedido.estadoPedido = nuevoEstado;
+                return true;
+            }
         }
+        return false;
+    }
+    public bool AgregarCadete(Cadete cadeteAgregar)
+    {
+        if (listaCadetes.Any(cadete => cadete.id == cadeteAgregar.id)) return false;
+        listaCadetes.Add(cadeteAgregar);
+        return true;
     }
     public Pedidos DarAltaPedido(int nroPedido, string observacion, Cliente cliente)
     {
@@ -56,7 +70,7 @@ public class Cadeteria
         listadoPedidos.Add(nuevoPedido);
         return nuevoPedido;
     }
-    public void AsignarPedido(int idCadete, Pedidos nuevoPedido)
+    public bool AsignarPedido(int idCadete, Pedidos nuevoPedido)
     {
         var cadete = BuscarCadetePorID(idCadete);
         if (cadete != null)
@@ -64,10 +78,12 @@ public class Cadeteria
             listadoPedidos.Add(nuevoPedido);
             CambiarEstadoPedido(nuevoPedido.nroPedido, Estado.Asignado);
             nuevoPedido.cadeteAsignado = cadete;
+            return true;
             /* pedidosNoAsignados.Remove(nuevoPedido); */
         }
+        return false;
     }
-    public void ReasignarPedido(int nroPedidoReasignar, int idCadeteNuevo)
+    public bool ReasignarPedido(int nroPedidoReasignar, int idCadeteNuevo)
     {
         Pedidos pedido = BuscarUnPedidoPorId(nroPedidoReasignar);
         if (pedido != null)
@@ -76,15 +92,17 @@ public class Cadeteria
             if (nuevoCadete != null)
             {
                 pedido.cadeteAsignado = nuevoCadete;
+                return true;
             }
         }
+        return false;
     }
     public double JornalACobrar(int idCadete)
     {
         var cadete = BuscarCadetePorID(idCadete);
         if(cadete == null) return 0;
 
-        int cantidad = listadoPedidos.Count(p => p.cadeteAsignado.id == idCadete);
+        int cantidad = listadoPedidos.Count(p => p.cadeteAsignado != null && p.cadeteAsignado.id == idCadete);
 
         return cantidad * 500; 
     }
